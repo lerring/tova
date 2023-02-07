@@ -57,7 +57,7 @@
                     <view class="ascCensus showRes-right">
                         <view class="showRes-title">ACS目标统计</view>
                         <view class="charts-linebox">
-                            <qiun-data-charts type="line" :opts="opts" :chartData="chartLineData"/>
+                            <qiun-data-charts type="line" :opts="optsLine" :chartData="chartLineData"/>
                         </view>
                         
                     </view>
@@ -71,6 +71,7 @@
 
 <script>
 import sdodtTitle from '@/components/sdodtTitle/sdodtTitle'
+import { legend } from '@dcloudio/vue-cli-plugin-uni/packages/postcss/tags';
 export default {
     components:{sdodtTitle},
     data() {
@@ -89,14 +90,10 @@ export default {
             // 折线统计图数据
             chartLineData: {},
             opts: {
-                color: ["#4686FF","#91CB74","#FAC858","#EE6666","#73C0DE","#3CA272","#FC8452","#9A60B4","#ea7ccc"],
-                padding: [15,10,0,15],
-                dataLabel: false,
-                enableScroll: false,
                 dataPointShape:false,
                 fontSize:9,
                 fontColor:'#333333',
-                
+                dataLabel:false,
                 legend: {
                     show: false,
                 },
@@ -124,20 +121,47 @@ export default {
                         radius:60,
                         fontSize:8,
                     },
+                }
+            },
+            optsLine:{
+                color:['#fc635c','#1bc369','#405df8'],
+                padding:[-10,0,5,0],
+                dataPointShape:false,
+                fontSize:9,
+                fontColor:'#333333',
+                dataLabel:false,
+                xAxis: {
+                    disableGrid: true,
+                    fontSize:9
+                },
+                yAxis: {
+                    dashLength: 2,
+                    disableGrid: true,
+                    splitNumber:3,
+                    padding:6,
+                },
+                extra: {
                     line: {
                         type: "curve",
                         width: 1,
                         activeType: "hollow",
+                        lableAlign:'top',
+                        
                     },
+                },
+                legend:{
+                    position:'top',
+                    float:'right',
+                    fontSize:7,
                 }
             }
         }
     },
     methods:{
         getServerData() {
-      //模拟从服务器获取雷达图数据时的延时
+            //模拟从服务器获取图表数据时的延时
             setTimeout(() => {
-                //模拟服务器返回数据，如果数据格式和标准格式不同，需自行按下面的格式拼接
+                //模拟服务器返回雷达图数据
                 let resRada = {
                     categories: ["注意力","反应速度","感知敏感度","专注稳定性","冲动控制"],
                     series: [
@@ -148,21 +172,25 @@ export default {
                     ]
                 };
                 this.chartRadarData = JSON.parse(JSON.stringify(resRada));
+                //模拟服务器返回折现图数据
                 let resLine = {
                     categories: ["1-5","5-10","10-15","15-20"],
                     series: [
-                    {
-                        name: "错误数",
-                        data: [5,10,7,15]
-                    },
-                    {
-                        name: "正确数",
-                        data: [3,8,5,7]
-                    },
-                    {
-                        name: "遗漏数",
-                        data: [2,3,2,5]
-                    }
+                        {
+                            name: "错误数",
+                            data: [5,10,7,15],
+                            legendShape:'square',
+                        },
+                        {
+                            name: "正确数",
+                            data: [3,8,5,7],
+                            legendShape:'square',
+                        },
+                        {
+                            name: "遗漏数",
+                            data: [2,3,2,5],
+                            legendShape:'square',
+                        }
                     ]
                 };
                 this.chartLineData = JSON.parse(JSON.stringify(resLine));
